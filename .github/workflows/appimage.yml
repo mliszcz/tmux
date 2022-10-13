@@ -1,0 +1,52 @@
+name: appimage
+
+on: [push, pull_request, workflow_dispatch]
+
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: "4"
+
+jobs:
+  appimage:
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 3 # NOTE: make_appimage.sh script drops 2 commits.
+    - name: Prepare AppImage
+      run: |
+        docker run --privileged --rm -v $(pwd):/work -e CMAKE_BUILD_PARALLEL_LEVEL centos:7 sh -c '/work/tools/make_appimage_centos7.sh'
+    - name: Verify dependencies
+      run: |
+        ldd ./build/tmux
+        ! ldd ./build/fish | grep curses
+        ! ldd ./build/fish | grep event
+        ! ldd ./build/fish | grep utf8proc
+    - uses: actions/upload-artifact@v3
+      with:
+        name: appimage
+        path: '*.AppImage'
+        retention-days: 1
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [appimage]
+    permissions:
+      contents: write
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 3 # NOTE: there are 2 commits to drop.
+    - uses: actions/download-artifact@v3
+    - run: echo "tag=$(basename appimage/*.AppImage .AppImage)" >> $GITHUB_ENV
+    - run: echo "rev=$(git rev-parse HEAD~2)" >> $GITHUB_ENV
+    - uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ env.tag }}
+        target_commitish: ${{ env.rev }}
+        body: tmux/tmux@${{ env.rev }}
+        files: 'appimage/*.AppImage'
