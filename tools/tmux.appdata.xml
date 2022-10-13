@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component type="desktop-application">
+  <id>tmux</id>
+  <translation type="gettext">tmux</translation>
+  <project_license>LicenseRef-proprietary=https://github.com/tmux/tmux/blob/master/COPYING</project_license>
+  <metadata_license>LicenseRef-proprietary=https://github.com/tmux/tmux/blob/master/COPYING</metadata_license>
+  <name>tmux</name>
+  <summary>tmux is a terminal multiplexer</summary>
+
+  <description>
+    <p>
+      tmux is a terminal multiplexer: it enables a number of terminals to
+      be created, accessed, and controlled from a single screen. tmux may
+      be detached from a screen and continue running in the background,
+      then later reattached.
+    </p>
+  </description>
+
+  <releases>
+    <release date="2024-02-13" version="3.4"/>
+  </releases>
+
+  <content_rating type="oars-1.1"/>
+  <url type="homepage">https://github.com/tmux/tmux</url>
+  <url type="bugtracker">https://github.com/tmux/tmux/issues</url>
+  <url type="faq">https://github.com/tmux/tmux/wiki/FAQ</url>
+  <url type="help">https://github.com/tmux/tmux/wiki</url>
+
+  <provides>
+    <binary>tmux</binary>
+  </provides>
+</component>
